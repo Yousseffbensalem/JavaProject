@@ -1,5 +1,5 @@
 package projet.book.model;
-import com.mysql.*;
+
 public class Book {
 	
 	
