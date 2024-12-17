@@ -8,6 +8,7 @@ public class Book {
 	private String Author;
 	private Double Price;
 	private int PublishedYear;
+	private int fdsfs;
 	
 	
 
