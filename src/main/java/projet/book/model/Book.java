@@ -9,6 +9,7 @@ public class Book {
 	private Double Price;
 	private int PublishedYear;
 	private int fdsfs;
+	private int fsfsq;
 	
 	
 
