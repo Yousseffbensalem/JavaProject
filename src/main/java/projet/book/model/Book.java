@@ -4,12 +4,11 @@ public class Book {
 	
 	
 	private Long id;
-	private String Title;
-	private String Author;
-	private Double Price;
-	private int PublishedYear;
-	private int fdsfs;
-	private int fsfsq;
+	private String title;
+	private String author;
+	private Double price;
+	private int published_year;
+
 	
 	
 
@@ -17,10 +16,10 @@ public class Book {
 	public Book(Long id, String title, String author, Double price, int publishedyear) {
 		super();
 		this.id = id;
-		Title = title;
-		Author = author;
-		Price=price;
-		PublishedYear = publishedyear;
+		this.title = title;
+		this.author = author;
+		this.price=price;
+		this.published_year = publishedyear;
 	}
 	
 	public Long getId() {
@@ -30,29 +29,29 @@ public class Book {
 		this.id = id;
 	}
 	public String getTitle() {
-		return Title;
+		return title;
 	}
 	public void setTitle(String title) {
-		Title = title;
+		this.title = title;
 	}
 	public String getAuthor() {
-		return Author;
+		return author;
 	}
 	public void setAuthor(String author) {
-		Author = author;
+		this.author = author;
 	}
 	public int getPublishedYear() {
-		return PublishedYear;
+		return published_year;
 	}
 	public void setPublishedYear(int publishedYear) {
-		PublishedYear = publishedYear;
+		published_year = publishedYear;
 	}
 	public Double getPrice() {
-		return Price;
+		return price;
 	}
 
 	public void setPrice(Double price) {
-		this.Price = price;
+		this.price = price;
 	}
 
 

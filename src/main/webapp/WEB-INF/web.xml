@@ -9,7 +9,9 @@
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>projet.book</param-value>
         </init-param>
+        
         <load-on-startup>1</load-on-startup>
+
     </servlet>
     <servlet-mapping>
         <servlet-name>Jersey Web Application</servlet-name>
