@@ -8,8 +8,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
@@ -75,7 +79,7 @@ public class BookController {
 	        }
 	    }
 	    @GET
-	    @Path("/author")
+	    @Path("/title")
 	    @Produces(MediaType.APPLICATION_JSON)
 	    public Response getBookByTile(@QueryParam("title") String title) {
 	        List<Book> books = new ArrayList<>();
@@ -105,6 +109,135 @@ public class BookController {
 	                           .build();
 	        }
 	    }
+	    @POST
+	    @Path("/add")
+	    @Consumes(MediaType.APPLICATION_JSON) 
+	    @Produces(MediaType.APPLICATION_JSON)
+	    public Response addBook(Book book) {
+	        try {
+	            
+	            boolean isSaved = saveBookToDatabase(book);
+
+	            if (isSaved) {
+	               
+	                return Response.status(Response.Status.CREATED).entity(book).build();
+	            } else {
+	                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+	                        .entity("Failed to save the book").build();
+	            }
+
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+	                    .entity("An error occurred while processing the request").build();
+	        }
+	    }
+
+	   
+	    private boolean saveBookToDatabase(Book book) {
+	        String query = "INSERT INTO books (title, author, price, published_year) VALUES (?, ?, ?, ?)";
+	        
+	        try (Connection connection = DatabaseConnection.getConnection();
+	             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+	            // Set the parameters for the PreparedStatement
+	            preparedStatement.setString(1, book.getTitle());
+	            preparedStatement.setString(2, book.getAuthor());
+	            preparedStatement.setDouble(3, book.getPrice());
+	            preparedStatement.setInt(4, book.getPublishedYear());
+
+	            int rowsAffected = preparedStatement.executeUpdate();
+
+	            return rowsAffected > 0; // If rows are affected, return true
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            return false;
+	        }
+	    }
+
+	    
+	    
+	    @POST
+	    @Path("/add-multiple")
+	    @Consumes(MediaType.APPLICATION_JSON)
+	    @Produces(MediaType.APPLICATION_JSON)
+	    public Response addBooks(List<Book> books) {
+	        String query = "INSERT INTO books (title, author, price, published_year) VALUES (?, ?, ?, ?)";
+
+	        try (Connection connection = DatabaseConnection.getConnection();
+	             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+	            // Loop through each book and add it to the batch
+	            for (Book book : books) {
+	                preparedStatement.setString(1, book.getTitle());
+	                preparedStatement.setString(2, book.getAuthor());
+	                preparedStatement.setDouble(3, book.getPrice());
+	                preparedStatement.setInt(4, book.getPublishedYear());
+
+	                preparedStatement.addBatch();  // Add to batch
+	            }
+
+	            // Execute the batch of insert statements
+	            int[] rowsAffected = preparedStatement.executeBatch();
+
+	            // If all rows were inserted successfully, return true
+	            for (int row : rowsAffected) {
+	                if (row == Statement.EXECUTE_FAILED) {
+	                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+	                                   .entity("Failed to save one or more books")
+	                                   .build();
+	                }
+	            }
+
+	            return Response.status(Response.Status.CREATED)
+	                           .entity("All books added successfully!")
+	                           .build();
+
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+	                           .entity("Error while adding books")
+	                           .build();
+	        }
+	    }
+	    @DELETE
+	    @Path("/delete/{id}")
+	    @Produces(MediaType.APPLICATION_JSON)
+	    public Response deleteBook(@PathParam("id") Long id) {
+	        String query = "DELETE FROM books WHERE id = ?";
+
+	        try (Connection connection = DatabaseConnection.getConnection();
+	             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+	            // Set the ID of the book to be deleted
+	            preparedStatement.setLong(1, id);
+
+	            int rowsAffected = preparedStatement.executeUpdate();
+
+	            if (rowsAffected > 0) {
+	                // Book was successfully deleted
+	                return Response.status(Response.Status.OK)
+	                               .entity("Book with ID " + id + " deleted successfully.")
+	                               .build();
+	            } else {
+	                // No book found with the provided ID
+	                return Response.status(Response.Status.NOT_FOUND)
+	                               .entity("Book with ID " + id + " not found.")
+	                               .build();
+	            }
+
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+	                           .entity("An error occurred while deleting the book.")
+	                           .build();
+	        }
+	    }
+
+	    
+	    
+	    
+	    
 	    
 	    
 	}

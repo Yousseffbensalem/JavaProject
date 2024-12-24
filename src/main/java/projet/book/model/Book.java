@@ -12,7 +12,7 @@ public class Book {
 	
 	
 
-	
+	public Book() {}
 	public Book(Long id, String title, String author, Double price, int publishedyear) {
 		super();
 		this.id = id;
