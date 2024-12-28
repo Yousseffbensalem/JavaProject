@@ -22,6 +22,7 @@ import projet.book.connection.DatabaseConnection;
 import projet.book.model.Book;
 
 @Path("/books")
+
 public class BookController {
 	
 	@GET
@@ -41,7 +42,7 @@ public class BookController {
 				int published_year=resultSet.getInt("published_year");
 				
 				books.add(new Book(id, title, author,price,published_year)); } 
-			return Response.ok(books).build(); 
+			return Response.ok(books).build();  
 			} catch (SQLException e) { e.printStackTrace(); 
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Database error").build(); } }
 	
