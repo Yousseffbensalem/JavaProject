@@ -32,7 +32,7 @@ public class BookController {
 		try (Connection connection = DatabaseConnection.getConnection(); 
 				Statement statement = connection.createStatement()) 
 		{ 
-			String query = "SELECT id, title, author , price,published_year FROM books"; 
+			String query = "SELECT id, title, author , price,published_year ,image_url FROM books"; 
 			ResultSet resultSet = statement.executeQuery(query); 
 			while (resultSet.next()) { 
 				Long id = resultSet.getLong("id");
@@ -40,8 +40,10 @@ public class BookController {
 				String author = resultSet.getString("author"); 
 				Double price= resultSet.getDouble("price");
 				int published_year=resultSet.getInt("published_year");
-				
-				books.add(new Book(id, title, author,price,published_year)); } 
+			    String image_url=resultSet.getString("image_url");
+
+  
+				books.add(new Book(id, title, author,price,published_year,image_url)); } 
 			return Response.ok(books).build();  
 			} catch (SQLException e) { e.printStackTrace(); 
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Database error").build(); } }
@@ -53,7 +55,7 @@ public class BookController {
 	    @Produces(MediaType.APPLICATION_JSON)
 	    public Response getBookByAuthor(@QueryParam("author") String author) {
 	        List<Book> books = new ArrayList<>();
-	        String query = "SELECT id, title, author, price, published_year FROM books WHERE author = ?";
+	        String query = "SELECT id, title, author, price, published_year ,image_url FROM books WHERE author = ?";
 
 	        try (Connection connection = DatabaseConnection.getConnection();
 	             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -67,8 +69,9 @@ public class BookController {
 	                    String bookauthor = resultSet.getString("author");
 	                    Double price = resultSet.getDouble("price");
 	                    int publishedYear = resultSet.getInt("published_year");
+	                    String image_url=resultSet.getString("image_url");
 
-	                    books.add(new Book(id, title, bookauthor, price, publishedYear));
+	                    books.add(new Book(id, title, bookauthor, price, publishedYear,image_url));
 	                }
 	            }
 	            return Response.ok(books).build(); // Return the list of books
@@ -84,7 +87,7 @@ public class BookController {
 	    @Produces(MediaType.APPLICATION_JSON)
 	    public Response getBookByTile(@QueryParam("title") String title) {
 	        List<Book> books = new ArrayList<>();
-	        String query = "SELECT id, title, author, price, published_year FROM books WHERE title = ?";
+	        String query = "SELECT id, title, author, price, published_year ,image_url FROM books WHERE title = ?";
 
 	        try (Connection connection = DatabaseConnection.getConnection();
 	             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -98,8 +101,9 @@ public class BookController {
 	                    String author = resultSet.getString("author");
 	                    Double price = resultSet.getDouble("price");
 	                    int publishedYear = resultSet.getInt("published_year");
+	                    String image_url=resultSet.getString("imageurl");
 
-	                    books.add(new Book(id, booktitle, author, price, publishedYear));
+	                    books.add(new Book(id, booktitle, author, price, publishedYear,image_url));
 	                }
 	            }
 	            return Response.ok(books).build(); // Return the list of books
@@ -136,7 +140,7 @@ public class BookController {
 
 	   
 	    private boolean saveBookToDatabase(Book book) {
-	        String query = "INSERT INTO books (title, author, price, published_year) VALUES (?, ?, ?, ?)";
+	        String query = "INSERT INTO books (title, author, price, published_year,image_url) VALUES (?, ?, ?, ?,?)";
 	        
 	        try (Connection connection = DatabaseConnection.getConnection();
 	             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -146,6 +150,7 @@ public class BookController {
 	            preparedStatement.setString(2, book.getAuthor());
 	            preparedStatement.setDouble(3, book.getPrice());
 	            preparedStatement.setInt(4, book.getPublishedYear());
+	            preparedStatement.setString(5,book.getImage_url() );
 
 	            int rowsAffected = preparedStatement.executeUpdate();
 
@@ -163,7 +168,7 @@ public class BookController {
 	    @Consumes(MediaType.APPLICATION_JSON)
 	    @Produces(MediaType.APPLICATION_JSON)
 	    public Response addBooks(List<Book> books) {
-	        String query = "INSERT INTO books (title, author, price, published_year) VALUES (?, ?, ?, ?)";
+	        String query = "INSERT INTO books (title, author, price, published_year,image_url) VALUES (?, ?, ?, ?,?)";
 
 	        try (Connection connection = DatabaseConnection.getConnection();
 	             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -174,6 +179,7 @@ public class BookController {
 	                preparedStatement.setString(2, book.getAuthor());
 	                preparedStatement.setDouble(3, book.getPrice());
 	                preparedStatement.setInt(4, book.getPublishedYear());
+	                preparedStatement.setString(5,book.getImage_url() );
 
 	                preparedStatement.addBatch();  // Add to batch
 	            }

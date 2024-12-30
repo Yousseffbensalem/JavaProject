@@ -8,18 +8,21 @@ public class Book {
 	private String author;
 	private Double price;
 	private int published_year;
+	
+	private String image_url ;
 
 	
 	
 
 	public Book() {}
-	public Book(Long id, String title, String author, Double price, int publishedyear) {
+	public Book(Long id, String title, String author, Double price, int publishedyear,String image_url) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.author = author;
 		this.price=price;
 		this.published_year = publishedyear;
+		this.image_url=image_url;
 	}
 	
 	public Long getId() {
@@ -54,6 +57,11 @@ public class Book {
 		this.price = price;
 	}
 
-
+	public String getImage_url() {
+		return image_url;
+	}
+	public void setImage_url(String image_url) {
+		this.image_url = image_url;
+	}
 
 }

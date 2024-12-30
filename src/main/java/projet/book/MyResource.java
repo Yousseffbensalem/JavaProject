@@ -18,25 +18,5 @@ import projet.book.model.Book;
 @Path("myresource")
 public class MyResource {
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON) 
-	public Response getAllBooks() { 
-		List<Book> books = new ArrayList<>(); 
-		try (Connection connection = DatabaseConnection.getConnection();
-				Statement statement = connection.createStatement()) 
-		{ 
-			String query = "SELECT * FROM books"; 
-			ResultSet resultSet = statement.executeQuery(query); 
-			while (resultSet.next()) { 
-				Long id = resultSet.getLong("id");
-				String title = resultSet.getString("title"); 
-				String author = resultSet.getString("author"); 
-				Double price= resultSet.getDouble("price");
-				int publishedyear=resultSet.getInt("published_year");
-				
-				books.add(new Book(id, title, author,price,publishedyear)); } 
-			return Response.ok(books).build(); 
-			} catch (SQLException e) { e.printStackTrace(); 
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Database error").build(); } }
-		
+
 }
