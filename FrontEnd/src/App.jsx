@@ -5,6 +5,7 @@ import BookList from "./Components/BookList"; // Your existing component
 import AddBook from "./Components/AddBook"; // Your existing component
 import Client from './Components/Client';
 import Cart from './Components/Cart';
+import UpdBook from './Components/UpdBook';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/add-book" element={<AddBook />} />
           <Route path="Client" element={<Client/>}/>
           <Route path="/cart" element={<Cart />} />
+          <Route path="/UpdBook/:id" element={<UpdBook />} />
         </Routes>
       </Container>
     </Router>

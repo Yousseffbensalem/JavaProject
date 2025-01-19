@@ -17,7 +17,7 @@ export const getBooks = async () => {
 };
 export const deleteBook = async (id) => {
   try {
-    const response = await api.delete(`/delete/${id}`); 
+    const response = await api.delete(`books/delete/${id}`); 
     return response.data;
   } catch (error) {
     console.error("Error deleting book:", error);
@@ -25,13 +25,23 @@ export const deleteBook = async (id) => {
 };
 export const addBook = async (book) => {
   try {
-    const response = await api.post(`/add`, book); 
+    const response = await api.post(`books/add`, book); 
     return response.data;
   } catch (error) {
     console.error("Error adding book:", error);
    
   }
 };
+export const updBook = async (id, book) => {
+  try {
+      const response = await api.put(`/books/update/${id}`, book);
+      return response.data;
+  } catch (error) {
+      console.error("Error updating book:", error);
+      throw error;
+  }
+};
+
 
 
 

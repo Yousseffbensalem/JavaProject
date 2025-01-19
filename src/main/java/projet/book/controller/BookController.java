@@ -12,6 +12,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -117,7 +118,7 @@ public class BookController {
 	    @POST
 	    @Path("/add")
 	    @Consumes(MediaType.APPLICATION_JSON) 
-	    @Produces(MediaType.APPLICATION_JSON)
+	  
 	    public Response addBook(Book book) {
 	        try {
 	            
@@ -237,6 +238,45 @@ public class BookController {
 	            e.printStackTrace();
 	            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 	                           .entity("An error occurred while deleting the book.")
+	                           .build();
+	        }
+	    }
+	    @PUT
+	    @Path("/update/{id}")
+	    @Consumes(MediaType.APPLICATION_JSON)
+	    @Produces(MediaType.APPLICATION_JSON)
+	    public Response updateBook(@PathParam("id") Long id, Book updatedBook) {
+	        String query = "UPDATE books SET title = ?, author = ?, price = ?, published_year = ?, image_url = ? WHERE id = ?";
+
+	        try (Connection connection = DatabaseConnection.getConnection();
+	             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+	            // Set the parameters for the PreparedStatement
+	            preparedStatement.setString(1, updatedBook.getTitle());
+	            preparedStatement.setString(2, updatedBook.getAuthor());
+	            preparedStatement.setDouble(3, updatedBook.getPrice());
+	            preparedStatement.setInt(4, updatedBook.getPublishedYear());
+	            preparedStatement.setString(5, updatedBook.getImage_url());
+	            preparedStatement.setLong(6, id); // Bind the ID for the WHERE clause
+
+	            int rowsAffected = preparedStatement.executeUpdate();
+
+	            if (rowsAffected > 0) {
+	                // If the update was successful
+	                return Response.status(Response.Status.OK)
+	                               .entity("Book with ID " + id + " updated successfully.")
+	                               .build();
+	            } else {
+	                // If no rows were affected, the book with the given ID was not found
+	                return Response.status(Response.Status.NOT_FOUND)
+	                               .entity("Book with ID " + id + " not found.")
+	                               .build();
+	            }
+
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+	                           .entity("An error occurred while updating the book: " + e.getMessage())
 	                           .build();
 	        }
 	    }

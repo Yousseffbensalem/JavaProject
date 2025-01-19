@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, Box, Typography, Card } from "@mui/material";
 import { getBooks, deleteBook } from "./api";
+import { useNavigate } from "react-router-dom";
 
 function BookList() {
+  const navigate = useNavigate();
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
@@ -75,7 +77,7 @@ function BookList() {
                     <Button
                       variant="contained"
                       color="primary"
-                      sx={{ marginRight: 1 }}
+                      onClick={() => navigate(`/UpdBook/${book.id}`)} 
                      
                     >
                       Update

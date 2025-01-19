@@ -24,6 +24,7 @@ function AddBookForm() {
       <TextField label="Author" name="author" required />
       <TextField label="Price" name="price" type="number" required />
       <TextField label="Year" name="year" type="number" required />
+      <TextField label="Image" name="image" required />
       <Button type="submit" variant="contained" color="primary">
         Add Book
       </Button>
